@@ -27,11 +27,14 @@ namespace DockerPOC.Controllers
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
+            var ipAddress = Request.HttpContext.Connection.RemoteIpAddress;
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = Summaries[rng.Next(Summaries.Length)],
+                ClientIP = ipAddress.ToString(),
+                FwdIP = Request.Headers["X-Forwarded-For"]
             })
             .ToArray();
         }
